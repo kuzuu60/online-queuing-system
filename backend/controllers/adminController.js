@@ -2,6 +2,31 @@ const pool = require('../models/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+async function adminSignup(req, res) {
+    try {
+        const { username, password, secretKey } = req.body;
+        console.log("From request body:", secretKey);
+        console.log("From .env:", process.env.ADMIN_SECRET_KEY);
+        // Optional: require a secret key to prevent public signup
+        if (secretKey !== process.env.ADMIN_SECRET_KEY) {
+            return res.status(403).json({ message: 'Invalid secret key' });
+        }
+
+        const hashed = await bcrypt.hash(password, 10);
+
+        const result = await pool.query(
+            'INSERT INTO admins (username, password) VALUES ($1, $2) RETURNING id, username',
+            [username, hashed]
+        );
+
+        res.status(201).json({ message: 'Admin created', admin: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+
 async function adminLogin(req, res) {
     try {
         const { username, password } = req.body;
@@ -20,7 +45,14 @@ async function adminLogin(req, res) {
             { expiresIn: '8h' }
         );
 
-        res.json({ token });
+      res.json({
+        message: "Login successful",
+      admin: {
+        id: admin.id,
+        username: admin.username
+      },
+      token
+      });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
@@ -99,4 +131,4 @@ async function updateApplicationStatus(req, res) {
   }
 }
 
-module.exports = { adminLogin , getAllApplications, getApplicationByIdAdmin, updateApplicationStatus };
+module.exports = { adminSignup, adminLogin , getAllApplications, getApplicationByIdAdmin, updateApplicationStatus };

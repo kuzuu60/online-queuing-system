@@ -12,19 +12,28 @@ async function submitApplication(req, res) {
     const photo = req.files?.photo ? req.files.photo[0].path : null;
 
     const application_id = generateApplicationId();
+
+    console.log("Submitting application:", application_id, "Name:", name, "Email:", email);
+
     const newApp = await createApplication({ application_id, name, email, phone, address, citizenship, photo });
 
-    res.status(201).json({
+    console.log("Application successfully saved to DB:", newApp);
+
+    // Send safe JSON response
+    return res.status(201).json({
       message: "Application submitted successfully",
       application_id: newApp.application_id,
       citizenship: newApp.citizenship,
-      photo: newApp.photo
+      photo: newApp.photo,
+      status: newApp.status
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error in submitApplication:", error);
+    return res.status(500).json({ message: "Server error, please try again" });
   }
 }
+
+
 
 async function trackApplication(req, res) {
   try {

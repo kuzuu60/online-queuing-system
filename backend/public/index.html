@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FTTH Service Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>FTTH Installation Request Portal</h1>
+    </header>
+
+    <div class="container">
+        <h2>Submit a New Application</h2>
+        <form id="ftthForm" enctype="multipart/form-data">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="address">Address</label>
+            <textarea id="address" name="address" required></textarea>
+
+            <label for="citizenship">Citizenship Document</label>
+            <input type="file" id="citizenship" name="citizenship" required>
+
+            <label for="photo">Photo</label>
+            <input type="file" id="photo" name="photo" required>
+
+            <input type="submit" value="Submit Request">
+        </form>
+
+        <div id="message" style="margin-top:20px; font-weight:bold;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Track Your Application</h2>
+        <form id="trackForm">
+            <label for="trackId">Application ID</label>
+            <input type="text" id="trackId" name="trackId" required>
+
+            <label for="trackEmail">Email used in application</label>
+            <input type="email" id="trackEmail" name="trackEmail" required>
+
+            <input type="submit" value="Check Status">
+        </form>
+        <div id="trackMessage" style="margin-top:20px; font-weight:bold;"></div>
+    </div>
+
+    <footer>
+        &copy; 2025 FTTH Service Portal
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

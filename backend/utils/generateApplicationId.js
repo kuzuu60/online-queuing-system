@@ -1,9 +1,7 @@
-let lastNumber = 0; // optionally fetch last number from DB on server start
+const { v4: uuidv4 } = require('uuid');
 
 function generateApplicationId() {
-  const year = new Date().getFullYear();
-  lastNumber += 1;
-  return `APP-${year}-${String(lastNumber).padStart(3, '0')}`;
+    return `APP-${uuidv4()}`; // Example: APP-550e8400-e29b-41d4-a716-446655440000
 }
 
 module.exports = generateApplicationId;
