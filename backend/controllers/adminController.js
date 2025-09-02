@@ -1,4 +1,32 @@
 const pool = require('../models/db');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+async function adminLogin(req, res) {
+    try {
+        const { username, password } = req.body;
+
+        const result = await pool.query('SELECT * FROM admins WHERE username=$1', [username]);
+        const admin = result.rows[0];
+
+        if (!admin) return res.status(401).json({ message: 'Invalid credentials' });
+
+        const match = await bcrypt.compare(password, admin.password);
+        if (!match) return res.status(401).json({ message: 'Invalid credentials' });
+
+        const token = jwt.sign(
+            { id: admin.id, username: admin.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '8h' }
+        );
+
+        res.json({ token });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
 
 // Get all applications (optionally filter by status)
 async function getAllApplications(req, res) {
@@ -71,4 +99,4 @@ async function updateApplicationStatus(req, res) {
   }
 }
 
-module.exports = { getAllApplications, getApplicationByIdAdmin, updateApplicationStatus };
+module.exports = { adminLogin , getAllApplications, getApplicationByIdAdmin, updateApplicationStatus };

@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { getAllApplications, getApplicationByIdAdmin,updateApplicationStatus } = require('../controllers/adminController');
+const verifyAdmin = require('../middlewares/verifyAdmin');
+
+const { adminLogin, getAllApplications, getApplicationByIdAdmin,updateApplicationStatus } = require('../controllers/adminController');
+
+
+// Login route (no auth required)
+router.post('/login', adminLogin);
+router.use(verifyAdmin);
 
 // Get all applications
 router.get('/applications', getAllApplications);
